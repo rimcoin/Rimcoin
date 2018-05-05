@@ -25,7 +25,7 @@ class NODE(BaseHTTPRequestHandler):
   
 def run():
     print("Starting Rimcoin Node, make sure you contacted at least one node to notify that you exist, as well as updating the balance file... ")
-    SERVER=('127.0.0.1', int(sys.argv[1]))
+    SERVER=('0.0.0.0', int(sys.argv[1]))
     httpd=HTTPServer(SERVER, NODE)
     httpd.serve_forever()
   
