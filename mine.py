@@ -1,13 +1,16 @@
 from Crypto.Hash import SHA256
-import os,random,sys
+import os,random,sys,subprocess
 args=sys.argv
-Hash=SHA256.new()
-hashes=int(open('hashes','r').read())
+os.system("curl "+args[1]+"/get_hash -s > hashd")
+hashes=int(open("hashd","r").read())
+for j in range(int(hashes/131072)):
+     diff/=2
 while True:
-    r=str(random.randint(1,(2**30)))
-    Hash.update(args[0])
-    diff=2**250
-    for j in range(int(hashes/840000)):
+    r=str(random.randint(1,(2**60)))
+    Hash=SHA256.new()
+    Hash.update(r)
+    diff=2**240
+    for j in range(int(hashes/1048576)):
         diff/=2
     if int(Hash.hexdigest(),16)<(diff):
         os.system("curl "+sys.argv[1]+"/submit*"+r+"*"+sys.argv[2])

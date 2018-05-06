@@ -37,18 +37,22 @@ def RIMCOIN_NODE(data):
             return "\x41"; # success
         else:
             return "\x00"; # fail
+    elif c=="get_hash":
+        return open('hashes','r').read();
     elif c=="submit":
         Hash=SHA256.new()
         Hash.update(args[0])
         hashes=int(open('hashes','r').read())
         forbidden=eval(open('forbidden','r').read())
         reward=50
-        diff=(2**250)
-        k=1
-        for j in range(int(hashes/840000)):
-            reward/=2
+        diffi=2**240
+        for j in range(int(hashes/1048576)):
             diff/=2
-        if int(Hash.hexdigest(),16)<((diff)) and (not args[0] in forbidden):
+        k=1
+        print(int(Hash.hexdigest(),16))
+        print(diffi)
+        h=Hash.hexdigest()
+        if int(h,16)<diffi:
             NODE=open("nodes","r").read() # read
             NODE=NODE.split("/") # split
             BALANCES=open("balance","r").read() # balance file
@@ -69,6 +73,9 @@ def RIMCOIN_NODE(data):
             hashd=open('hashes','w')
             hashd.write(str(hashes+1))
             hashd.close()
+            print("\x41")
+            return "\x41";
+        return "\x42";
     elif c=="bal":
         try:
             BALANCES=open("balance","r").read() # read
