@@ -45,14 +45,11 @@ def RIMCOIN_NODE(data):
         hashes=int(open('hashes','r').read())
         forbidden=eval(open('forbidden','r').read())
         reward=50
-        diffi=2**240
-        for j in range(int(hashes/1048576)):
-            diff/=2
-        k=1
-        print(int(Hash.hexdigest(),16))
-        print(diffi)
+        diff=2**240
+        for j in range(int(hashes/1024)):
+            diff=diff*(131071/131072)
         h=Hash.hexdigest()
-        if int(h,16)<diffi:
+        if int(h,16)<diff:
             NODE=open("nodes","r").read() # read
             NODE=NODE.split("/") # split
             BALANCES=open("balance","r").read() # balance file
