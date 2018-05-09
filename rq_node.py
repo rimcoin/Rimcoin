@@ -46,8 +46,9 @@ def RIMCOIN_NODE(data):
         forbidden=eval(open('forbidden','r').read())
         reward=50
         diff=2**240
-        for j in range(int(hashes/1024)):
+        for j in range(int(hashes/1048576)):
             diff=diff*(131071/131072)
+            reward/=2
         h=Hash.hexdigest()
         if int(h,16)<diff:
             NODE=open("nodes","r").read() # read
@@ -172,4 +173,3 @@ def RIMCOIN_NODE(data):
         except:
             return "\x42"; # fail
     return "\x40"; # no command
-
