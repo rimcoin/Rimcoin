@@ -6,9 +6,6 @@
 from Crypto.Hash import SHA256
 import os,random
 
-diff=2**240
-miner=0
-
 def REAL_HASH(s):
     h=0 # hashed output
     for c in s:
@@ -16,7 +13,6 @@ def REAL_HASH(s):
     return ((h+0x80000000)&0xFFFFFFFF) - 0x80000000; # final return
 
 def RIMCOIN_NODE(data):
-    global diff,miner
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
@@ -43,23 +39,15 @@ def RIMCOIN_NODE(data):
             return "\x00"; # fail
     elif c=="get_hash":
         return open('hashes','r').read();
-    elif c=="new_mine":
-        try:
-            diff=diff/(131078/131072)
-            miner+=1
-            return "\x41";
-        except:
-            return "\x42";
-    elif c=="get_mine":
-        return str(diff);
     elif c=="submit":
         Hash=SHA256.new()
         Hash.update(args[0])
         hashes=int(open('hashes','r').read())
         forbidden=eval(open('forbidden','r').read())
         reward=50
-        for j in range(int(hashes/840000)):
-            reward/=2
+        diff=2**240
+        for j in range(int(hashes/1024)):
+            diff=diff*(131071/131072)
         h=Hash.hexdigest()
         if int(h,16)<diff:
             NODE=open("nodes","r").read() # read
@@ -184,3 +172,4 @@ def RIMCOIN_NODE(data):
         except:
             return "\x42"; # fail
     return "\x40"; # no command
+
