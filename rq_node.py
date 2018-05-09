@@ -42,9 +42,14 @@ def RIMCOIN_NODE(data):
         else:
             return "\x00"; # fail
     elif c=="get_hash":
-        diff=diff/(131073/131072)
-        miner+=1
         return open('hashes','r').read();
+    elif c=="new_mine":
+        try:
+            diff=diff/(131078/131072)
+            miner+=1
+            return "\x41";
+        except:
+            return "\x42";
     elif c=="get_mine":
         return str(diff);
     elif c=="submit":
