@@ -12,7 +12,7 @@ def REAL_HASH(s):
         h=(31*h+ord(c))&0xFFFFFFFF # java hashing algo
     return ((h+0x80000000)&0xFFFFFFFF) - 0x80000000; # final return
 
-def RIMCOIN_NODE(data):
+def RIMCOIN_NODE(data,ip):
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
@@ -101,7 +101,11 @@ def RIMCOIN_NODE(data):
         except:
             return "\x42"; # fail
     elif c=="up_bal":
-        try:
+        try:            
+            IPS=open("ip","r").read() # open id file
+            IPS=eval(IPS) # evaluate
+            if ip!=IPS[args[0]]:
+                return "\x42";
             BALANCES=open("balance","r").read() # open
             BALANCES=eval(BALANCES) # read
             BALANCES[args[0]]-=float(args[2]) # remove
@@ -126,6 +130,12 @@ def RIMCOIN_NODE(data):
         BALANCES[args[0]]=0 # add new wallet
         BALANCEW.write(str(BALANCES)) # write
         BALANCEW.close() # close
+        IPS=open("ip","r").read() # open id file
+        IPS=eval(IPS) # evaluate
+        IPS[args[0]]=ip
+        IP=open('ip','w')
+        IP.write(str(IPS))
+        IP.close()
     elif c=="rq_bal":
         return open("balance","r").read(); # give balance file
     elif c=="update_mine":
@@ -171,5 +181,7 @@ def RIMCOIN_NODE(data):
                 return "\x43";
         except:
             return "\x42"; # fail
+    elif c=="rq_ip":
+        return open('ip','r').read();
     return "\x40"; # no command
 

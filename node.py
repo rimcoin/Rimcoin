@@ -20,7 +20,8 @@ class NODE(BaseHTTPRequestHandler):
         self.end_headers()
 
         # Send command's reply data
-        self.wfile.write(rq_node.RIMCOIN_NODE(self.path[1:]))
+        print(self.client_address)
+        self.wfile.write(rq_node.RIMCOIN_NODE(self.path[1:],self.client_address))
         return "\x41"; # Success! 
   
 def run():
