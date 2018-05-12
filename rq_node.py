@@ -12,7 +12,10 @@ def REAL_HASH(s):
         h=(31*h+ord(c))&0xFFFFFFFF # java hashing algo
     return ((h+0x80000000)&0xFFFFFFFF) - 0x80000000; # final return
 
+diff=2**240
+
 def RIMCOIN_NODE(data,ip):
+    global diff
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
@@ -39,15 +42,17 @@ def RIMCOIN_NODE(data,ip):
             return "\x00"; # fail
     elif c=="get_hash":
         return open('hashes','r').read();
+    elif c=="get_mine":
+        return str(diff);
+    elif c=="new_mine":
+        diff=diff/(131078/131072)
+        return "\x41";
     elif c=="submit":
         Hash=SHA256.new()
         Hash.update(args[0])
         hashes=int(open('hashes','r').read())
         forbidden=eval(open('forbidden','r').read())
         reward=50
-        diff=2**240
-        for j in range(int(hashes/1024)):
-            diff=diff*(131071/131072)
         h=Hash.hexdigest()
         if int(h,16)<diff:
             NODE=open("nodes","r").read() # read
@@ -145,8 +150,6 @@ def RIMCOIN_NODE(data,ip):
         forb.write(str(forbidden))
         forb.close()
         reward=50
-        for j in range(int(hashes/840000)):
-            reward/=2
         BALANCES=open("balance","r").read() # balance file
         BALANCES=eval(BALANCES) # evaluate, to read balances
         BALANCES[args[1]]+=reward
@@ -184,4 +187,5 @@ def RIMCOIN_NODE(data,ip):
     elif c=="rq_ip":
         return open('ip','r').read();
     return "\x40"; # no command
+
 
