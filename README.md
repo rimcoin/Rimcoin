@@ -1,2 +1,8 @@
 # Rimcoin
-Rimcoin is a new, simple, and fast cryptocurrency. It is designed for speed, ease of use, and efficiency. 
+This repository contains the code for the Rimcoin NODE software. 
+
+The node software is what helps maintain the network. 
+
+You can get the wallet software (for unix-like systems) [here](https://github.com/rimcoin/Wallet). 
+
+You can get the wallet software (for Windows systems) [here](https://github.com/rimcoin/WinWallet). 
