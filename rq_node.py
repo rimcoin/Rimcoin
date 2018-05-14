@@ -12,6 +12,8 @@ def REAL_HASH(s):
         h=(31*h+ord(c))&0xFFFFFFFF # java hashing algo
     return ((h+0x80000000)&0xFFFFFFFF) - 0x80000000; # final return
 
+diff=2**240
+
 def RIMCOIN_NODE(data,ip):
     out="" # output
     c=data.split("*")[0] # command
@@ -37,6 +39,11 @@ def RIMCOIN_NODE(data,ip):
             return "\x41"; # success
         else:
             return "\x00"; # fail
+    elif c=="get_mine":
+         return str(diff);
+    elif c=="new_mine":
+         diff=diff/(131078/131072)
+         return "\x41";
     elif c=="get_hash":
         return open('hashes','r').read();
     elif c=="submit":
