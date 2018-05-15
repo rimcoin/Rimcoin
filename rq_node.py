@@ -150,20 +150,32 @@ def RIMCOIN_NODE(data,ip):
     elif c=="rq_bal":
         return open("balance","r").read(); # give balance file
     elif c=="update_mine":
+        Hash=SHA256.new()
+        Hash.update(args[0])
+        hashes=int(open('hashes','r').read())
         forbidden=eval(open('forbidden','r').read())
-        forbidden.append(args[0])
-        forb=open('forbidden','w')
-        forb.write(str(forbidden))
-        forb.close()
         reward=50
-        for j in range(int(hashes/840000)):
-            reward/=2
-        BALANCES=open("balance","r").read() # balance file
-        BALANCES=eval(BALANCES) # evaluate, to read balances
-        BALANCES[args[1]]+=reward
-        BL_FILE=open("balance","w") # write
-        BL_FILE.write(str(BALANCES)) # write
-        BL_FILE.close() # close
+        diff=2**240
+        for j in range(int(hashes/1024)):
+            diff=diff*(131071/131072)
+        h=Hash.hexdigest()
+        if int(h,16)<diff:
+            BALANCES=open("balance","r").read() # balance file
+            BALANCES=eval(BALANCES) # evaluate, to read balances
+            BALANCES[args[1]]+=reward
+            BL_FILE=open("balance","w") # write
+            BL_FILE.write(str(BALANCES)) # write
+            BL_FILE.close() # close
+            forbidden.append(args[0])
+            forb=open('forbidden','w')
+            forb.write(str(forbidden))
+            forb.close()
+            hashd=open('hashes','w')
+            hashd.write(str(hashes+1))
+            hashd.close()
+            print("\x41")
+            return "\x41";
+        return "\x42";
     elif c=="create":
         BALANCES=open("balance","r").read() # open
         BALANCES=eval(BALANCES)
