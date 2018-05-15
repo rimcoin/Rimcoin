@@ -133,16 +133,20 @@ def RIMCOIN_NODE(data,ip):
     elif c=="add_rc_wallet":
         BALANCES=open("balance","r").read() # get file
         BALANCES=eval(BALANCES) # evaluate
-        BALANCEW=open("balance","w") # open
-        BALANCES[args[0]]=0 # add new wallet
-        BALANCEW.write(str(BALANCES)) # write
-        BALANCEW.close() # close
-        IPS=open("ip","r").read() # open id file
-        IPS=eval(IPS) # evaluate
-        IPS[args[0]]=ip
-        IP=open('ip','w')
-        IP.write(str(IPS))
-        IP.close()
+        if not args[0] in BALANCES:
+            BALANCEW=open("balance","w") # open
+            BALANCES[args[0]]=0 # add new wallet
+            BALANCEW.write(str(BALANCES)) # write
+            BALANCEW.close() # close
+            IPS=open("ip","r").read() # open id file
+            IPS=eval(IPS) # evaluate
+            IPS[args[0]]=ip
+            IP=open('ip','w')
+            IP.write(str(IPS))
+            IP.close()
+            return "\x41";
+        else:
+            return "\x42";
     elif c=="rq_bal":
         return open("balance","r").read(); # give balance file
     elif c=="update_mine":
