@@ -33,7 +33,7 @@ def RIMCOIN_NODE(data,ip):
             NODE=NODE.split("/") # split
             for node in NODE:
                 try:
-                    os.system("(curl "+node+"/up_bal*"+"*".join(args)+" &sleep 20; kill $$)&") # contact, to update balances
+                    os.system("(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 20; kill $$)&") # contact, to update balances
                 except:
                     pass
             return "\x41"; # success
