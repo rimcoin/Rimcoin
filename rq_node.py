@@ -3,6 +3,7 @@
 # Credit license
 # Do whatever you want with it. Just don't blame me for ANYTHING, and credit me.
 
+from Crypto.Hash import SHA256
 import os,random
 
 def REAL_HASH(s):
