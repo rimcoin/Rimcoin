@@ -3,7 +3,6 @@
 # Credit license
 # Do whatever you want with it. Just don't blame me for ANYTHING, and credit me.
 
-from Crypto.Hash import SHA256
 import os,random
 
 def REAL_HASH(s):
@@ -204,7 +203,51 @@ def RIMCOIN_NODE(data,ip):
                 return "\x43";
         except:
             return "\x42"; # fail
+    elif c=="app":
+        i=open('balance','r') # open users file
+        i=eval(i.read()) # read said file
+        bal=str(i[args[0]]); # get balance
+        # final html
+        return """
+<html>
+<head>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Wallet</title>
+<style>
+* {
+    background-color: #ffffff;
+    font-size:56px;
+    border-size: 0px;
+    color: #1294F6;
+    border:0;
+};
+</style>
+</head>
+<body><center>
+<script src='https://code.jquery.com/jquery-3.3.1.js'></script>
+<h1 style="font-family:helvetica">User</h1>
+<p><div id="x" style="font-family:helvetica"></div></p>
+<p><strong id="y" style="font-family:helvetica">Balance</strong></p>
+<p><div id="z" style="font-family:helvetica"></div></p>
+<h1 style="font-family:helvetica">Function</h1>
+<button onclick="
+rec=prompt('Recieving Address? ');am=prompt('Amount? ');getText('/send*'+localStorage.user+'*'+rec+'*'+am+'*'+localStorage.sk);bal-=parseFloat(am);">Send</button>
+<script>
+bal="""+bal+""";
+function getText(url){
+  document.body.innerHTML+="<iframe src='"+url+"' id='abc' style='opacity:0;'></iframe>";
+};
+if (localStorage.ft!="n"){
+    localStorage.user='"""+str(args[0])+"""';
+    localStorage.sk='"""+str(args[1])+"""';
+    localStorage.ft="n";
+};
+document.getElementById("x").innerHTML=localStorage.user;
+document.getElementById("z").innerHTML=bal.toString();
+setInterval(function f(){document.getElementById('z').innerHTML=bal.toString();},500);
+</script>
+
+</center></body></html>"""
     elif c=="rq_ip":
         return open('ip','r').read();
     return "\x40"; # no command
-
