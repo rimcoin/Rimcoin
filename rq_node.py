@@ -15,6 +15,7 @@ def REAL_HASH(s):
 diff=2**240
 
 def RIMCOIN_NODE(data,ip):
+    global diff
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
@@ -54,7 +55,8 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(131071/131072)
+            diff=diff*(((2**15.77 - 1.0) / (2**15.77)) ** 1000000)
+            pass
         h=Hash.hexdigest()
         if int(h,16)<diff:
             NODE=open("nodes","r").read() # read
