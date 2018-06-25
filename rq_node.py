@@ -55,7 +55,7 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(((2**15.77 - 1.0) / (2**15.77)) ** 1000000)
+            diff=diff*(((2**15.77 - 1.0) / (2**15.77)))
             pass
         h=Hash.hexdigest()
         if int(h,16)<diff:
@@ -159,7 +159,7 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(131071/131072)
+            diff=diff*(((2**15.77 - 1.0) / (2**15.77)))
         h=Hash.hexdigest()
         if int(h,16)<diff:
             BALANCES=open("balance","r").read() # balance file
