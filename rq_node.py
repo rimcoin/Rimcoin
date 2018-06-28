@@ -4,7 +4,7 @@
 # Do whatever you want with it. Just don't blame me for ANYTHING, and credit me.
 
 from Crypto.Hash import SHA256
-import os,random
+import os,random,time
 
 def REAL_HASH(s):
     h=0 # hashed output
@@ -13,9 +13,11 @@ def REAL_HASH(s):
     return ((h+0x80000000)&0xFFFFFFFF) - 0x80000000; # final return
 
 diff=2**240
+last=time.time()
+last2=time.time()
 
 def RIMCOIN_NODE(data,ip):
-    global diff
+    global diff, last, last2
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
@@ -24,7 +26,9 @@ def RIMCOIN_NODE(data,ip):
         BALANCES=eval(BALANCES) # evaluate, to read balances
         IDS=open("id","r").read() # open id file
         IDS=eval(IDS) # evaluate
-        if REAL_HASH(str(int(args[3],16)))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0: # if wallet has enough money, and ID is ok, send. 
+        print(REAL_HASH(str(int(args[3].replace("L", ""),16)).replace("L","")))
+        print(IDS[args[0]])
+        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0: # if wallet has enough money, and ID is ok, send. 
             BALANCES[args[0]]-=float(args[2]) # remove
             BALANCES[args[1]]+=float(args[2]) # add
             BL_FILE=open("balance","w") # write
@@ -33,13 +37,16 @@ def RIMCOIN_NODE(data,ip):
             NODE=open("nodes","r").read() # nodes
             NODE=NODE.split("/") # split
             for node in NODE:
+                if len(node) >= 7:
+                    continue
                 try:
-                    os.system("(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 20; kill $$)&") # contact, to update balances
+                    os.system("sh -c '(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 1; kill $$)'& ") # contact, to update balances
                 except:
                     pass
             return "\x41"; # success
         else:
             return "\x00"; # fail
+        #os.system("kill $(ps aux | grep cleanup_when_done)")
     elif c=="get_mine":
          return str(diff);
     elif c=="new_mine":
@@ -72,8 +79,10 @@ def RIMCOIN_NODE(data,ip):
             forb.write(str(forbidden))
             forb.close()
             for node in NODE:
+                if len(node) >= 7:
+                    continue
                 try:
-                    os.system("(curl "+node+"/update_mine*"+"*".join(args)+" &sleep 20; kill $$)&") # contact, to update balances
+                    os.system("sh -c '(curl "+node+"/update_mine*"+"*".join(args)+" &sleep 1; kill $$)'& ") # contact, to update balances
                 except:
                     pass
             hashd=open('hashes','w')
@@ -159,7 +168,7 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(((2**15.77 - 1.0) / (2**15.77)))
+            diff=diff*(131071/131072)
         h=Hash.hexdigest()
         if int(h,16)<diff:
             BALANCES=open("balance","r").read() # balance file
@@ -197,7 +206,7 @@ def RIMCOIN_NODE(data,ip):
                 IDS=open("id","r").read() # open id file
                 IDS=eval(IDS) # evaluate
                 key=random.getrandbits(160) # get random bits
-                IDS[args[0]]=REAL_HASH(str(key)) # get real hash
+                IDS[args[0]]=REAL_HASH(str(key).replace("L","")) # get real hash
                 IDSW=open("id","w") # open
                 IDSW.write(str(IDS)) # write
                 IDSW.close() # close
@@ -253,4 +262,10 @@ setInterval(function f(){document.getElementById('z').innerHTML=bal.toString();}
 </center></body></html>"""
     elif c=="rq_ip":
         return open('ip','r').read();
+    if (time.time() - last) > 3600:
+        os.system("rm -rf forbidden; printf '[]' > forbidden")
+        last=time.time()
+    if (time.time() - last2) > 20:
+        os.system("kill $(ps aux | grep curl)")
+        last2=time.time()
     return "\x40"; # no command
