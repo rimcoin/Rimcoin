@@ -6,7 +6,7 @@
 # Do whatever you want with it. Just don't blame me for ANYTHING, and credit me. 
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import os,sys,rq_node
+import os,sys,rq_node,time
 
 # Create custom NODE class
 class NODE(BaseHTTPRequestHandler):
@@ -20,12 +20,14 @@ class NODE(BaseHTTPRequestHandler):
         self.end_headers()
 
         # Send command's reply data
-        print(self.client_address)
         self.wfile.write(rq_node.RIMCOIN_NODE(self.path[1:],self.client_address))
         return "\x41"; # Success! 
+
+last = time.time()
   
 def run():
     print("Starting Rimcoin Node, make sure you contacted at least one node to notify that you exist, as well as updating the balance file... ")
+    os.system("rm -rf forbidden; printf '[]' > forbidden")
     SERVER=('0.0.0.0', int(sys.argv[1]))
     httpd=HTTPServer(SERVER, NODE)
     httpd.serve_forever()
