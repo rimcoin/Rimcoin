@@ -28,7 +28,7 @@ def RIMCOIN_NODE(data,ip):
         IDS=eval(IDS) # evaluate
         print(REAL_HASH(str(int(args[3].replace("L", ""),16)).replace("L","")))
         print(IDS[args[0]])
-        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0: # if wallet has enough money, and ID is ok, send. 
+        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0 and float(args[2])>0: # if wallet has enough money, and ID is ok, send. 
             BALANCES[args[0]]-=float(args[2]) # remove
             BALANCES[args[1]]+=float(args[2]) # add
             BL_FILE=open("balance","w") # write
@@ -168,7 +168,8 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(131071/131072)
+            diff=diff*(((2**15.77 - 1.0) / (2**15.77)))
+            pass
         h=Hash.hexdigest()
         if int(h,16)<diff:
             BALANCES=open("balance","r").read() # balance file
