@@ -43,7 +43,7 @@ def RIMCOIN_NODE(data,ip):
             NODE=open("nodes","r").read() # nodes
             NODE=NODE.split("/") # split
             for node in NODE:
-                if len(node) >= 7:
+                if len(node) >= 2:
                     continue
                 try:
                     os.system("sh -c '(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 1; kill $$)'& ") # contact, to update balances
@@ -84,8 +84,6 @@ def RIMCOIN_NODE(data,ip):
             forb.write(str(forbidden))
             forb.close()
             for node in NODE:
-                if len(node) >= 7:
-                    continue
                 try:
                     os.system("sh -c '(curl "+node+"/update_mine*"+"*".join(args)+" &sleep 1; kill $$)'& ") # contact, to update balances
                 except:
