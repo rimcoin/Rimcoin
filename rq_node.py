@@ -21,6 +21,12 @@ def RIMCOIN_NODE(data,ip):
     out="" # output
     c=data.split("*")[0] # command
     args=data.split("*")[1:] # arguments
+    if (time.time() - last) > 120:
+        os.system("rm -rf forbidden; printf '[]' > forbidden")
+        last=time.time()
+    if (time.time() - last2) > 20:
+        os.system("kill $(ps aux | grep curl)")
+        last2=time.time()
     if c=="send":
         BALANCES=open("balance","r").read() # balance file
         BALANCES=eval(BALANCES) # evaluate, to read balances
@@ -28,7 +34,7 @@ def RIMCOIN_NODE(data,ip):
         IDS=eval(IDS) # evaluate
         print(REAL_HASH(str(int(args[3].replace("L", ""),16)).replace("L","")))
         print(IDS[args[0]])
-        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0 and float(args[2])>0: # if wallet has enough money, and ID is ok, send. 
+        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0 and float(args[2]) > 0: # if wallet has enough money, and ID is ok, send. 
             BALANCES[args[0]]-=float(args[2]) # remove
             BALANCES[args[1]]+=float(args[2]) # add
             BL_FILE=open("balance","w") # write
@@ -46,7 +52,6 @@ def RIMCOIN_NODE(data,ip):
             return "\x41"; # success
         else:
             return "\x00"; # fail
-        #os.system("kill $(ps aux | grep cleanup_when_done)")
     elif c=="get_mine":
          return str(diff);
     elif c=="new_mine":
@@ -168,8 +173,7 @@ def RIMCOIN_NODE(data,ip):
         reward=50
         diff=2**240
         for j in range(int(hashes/1024)):
-            diff=diff*(((2**15.77 - 1.0) / (2**15.77)))
-            pass
+            diff=diff*(131071/131072)
         h=Hash.hexdigest()
         if int(h,16)<diff:
             BALANCES=open("balance","r").read() # balance file
@@ -263,10 +267,4 @@ setInterval(function f(){document.getElementById('z').innerHTML=bal.toString();}
 </center></body></html>"""
     elif c=="rq_ip":
         return open('ip','r').read();
-    if (time.time() - last) > 3600:
-        os.system("rm -rf forbidden; printf '[]' > forbidden")
-        last=time.time()
-    if (time.time() - last2) > 20:
-        os.system("kill $(ps aux | grep curl)")
-        last2=time.time()
     return "\x40"; # no command
