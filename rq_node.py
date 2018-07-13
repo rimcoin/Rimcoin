@@ -19,22 +19,22 @@ last2=time.time()
 def RIMCOIN_NODE(data,ip):
     global diff, last, last2
     out="" # output
-    c=data.split("*")[0] # command
-    args=data.split("*")[1:] # arguments
-    if (time.time() - last) > 120:
-        os.system("rm -rf forbidden; printf '[]' > forbidden")
-        last=time.time()
-    if (time.time() - last2) > 20:
-        os.system("kill $(ps aux | grep curl)")
-        last2=time.time()
-    if c=="send":
-        BALANCES=open("balance","r").read() # balance file
-        BALANCES=eval(BALANCES) # evaluate, to read balances
-        IDS=open("id","r").read() # open id file
-        IDS=eval(IDS) # evaluate
-        print(REAL_HASH(str(int(args[3].replace("L", ""),16)).replace("L","")))
-        print(IDS[args[0]])
-        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0 and float(args[2]) > 0: # if wallet has enough money, and ID is ok, send. 
+    c=data.split("*")[0] # command                                                                                                                                                                                                            
+    args=data.split("*")[1:] # arguments                                                                                                                                                                                                      
+    if (time.time() - last) > 120:                                                                                                                                                                                                            
+        os.system("rm -rf forbidden; printf '[]' > forbidden")                                                                                                                                                                                
+        last=time.time()                                                                                                                                                                                                                      
+    if (time.time() - last2) > 20:                                                                                                                                                                                                            
+        os.system("kill $(ps aux | grep curl)")                                                                                                                                                                                               
+        last2=time.time()                                                                                                                                                                                                                     
+    if c=="send":                                                                                                                                                                                                                             
+        BALANCES=open("balance","r").read() # balance file                                                                                                                                                                                    
+        BALANCES=eval(BALANCES) # evaluate, to read balances                                                                                                                                                                                  
+        IDS=open("id","r").read() # open id file                                                                                                                                                                                              
+        IDS=eval(IDS) # evaluate                                                                                                                                                                                                              
+        print(REAL_HASH(str(int(args[3].replace("L", ""),16)).replace("L","")))                                                                                                                                                               
+        print(IDS[args[0]])                                                                                                                                                                                                                   
+        if REAL_HASH(str(int(args[3].replace("L",""),16)).replace("L",""))==IDS[args[0]] and (BALANCES[args[0]]-float(args[2]))>0 and float(args[2]) > 0: # if wallet has enough money, and ID is ok, send.                                   
             BALANCES[args[0]]-=float(args[2]) # remove
             BALANCES[args[1]]+=float(args[2]) # add
             BL_FILE=open("balance","w") # write
@@ -43,7 +43,7 @@ def RIMCOIN_NODE(data,ip):
             NODE=open("nodes","r").read() # nodes
             NODE=NODE.split("/") # split
             for node in NODE:
-                if len(node) >= 2:
+                if len(node) >= 7:
                     continue
                 try:
                     os.system("sh -c '(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 1; kill $$)'& ") # contact, to update balances
@@ -84,6 +84,8 @@ def RIMCOIN_NODE(data,ip):
             forb.write(str(forbidden))
             forb.close()
             for node in NODE:
+                if len(node) >= 7:
+                    continue
                 try:
                     os.system("sh -c '(curl "+node+"/update_mine*"+"*".join(args)+" &sleep 1; kill $$)'& ") # contact, to update balances
                 except:
@@ -219,10 +221,6 @@ def RIMCOIN_NODE(data,ip):
         except:
             return "\x42"; # fail
     elif c=="app":
-        i=open('balance','r') # open users file
-        i=eval(i.read()) # read said file
-        bal=str(i[args[0]]); # get balance
-        # final html
         return """
 <html>
 <head>
@@ -261,7 +259,6 @@ document.getElementById("x").innerHTML=localStorage.user;
 document.getElementById("z").innerHTML=bal.toString();
 setInterval(function f(){document.getElementById('z').innerHTML=bal.toString();},500);
 </script>
-
 </center></body></html>"""
     elif c=="rq_ip":
         return open('ip','r').read();
