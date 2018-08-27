@@ -42,9 +42,13 @@ def RIMCOIN_NODE(data,ip):
             BL_FILE.close() # close
             NODE=open("nodes","r").read() # nodes
             NODE=NODE.split("/") # split
+            GONE=[]
             for node in NODE:
-                if len(node) >= 7:
+                if len(node) <= 7:
                     continue
+                if node in GONE:
+                    continue
+                GONE.append(node)
                 try:
                     os.system("sh -c '(curl "+node+"/up_bal*"+"*".join(args[:-1])+" &sleep 1; kill $$)'& ") # contact, to update balances
                 except:
